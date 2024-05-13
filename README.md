@@ -1,8 +1,9 @@
 # Checklist
 
 - [x] Creating list
-- [ ] Make list draggable
+- [x] Make list draggable
+- [ ] Make Backend system
 # UI shenanigans
 - [ ] Beautify UI
-- [ ] validation for Player input
-- [ ] make it responsive
+- [ ] validation to add players (user have entered username, string length validation)
+- [x] make it responsive
