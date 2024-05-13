@@ -1,39 +1,36 @@
-import { useEffect, useState } from 'react';
+import { useRef, useState } from "react";
 
-const Modal = () => {
-  const [username, setUsername] = useState('');
-  const [shouldRender, setShouldRender] = useState(false);
-
+/* eslint-disable react/prop-types */
+const Modal = ({setUsername, showModal, setShowModal }) => {
+  const [inputName, setInputName] = useState(null)
   const handleAddUsername = () => {
+    const username = inputElement.current.value
     localStorage.setItem("username", username);
-    setShouldRender(true);
+    setUsername(localStorage.getItem("username"))
+    setShowModal(false)
   };
 
-  useEffect(() => {
-    // Re-render the page
-    if (shouldRender) {
-      window.location.reload();
-    }
-  }, [shouldRender]);
+  const inputElement = useRef()
+
+  if(!showModal) return null
 
   return (
-    <dialog id="my_modal_2" className="modal">
+    <dialog id="my_modal_2" className="modal modal-open">
     <div className="modal-box w-auto">
-      
-      <p className="mb-3">{localStorage.getItem("username") == '' ?  'Please enter USERNAME' : 'Please enter NEW USERNAME'}</p>
+      <p className="mb-3">{localStorage.getItem("username") === null ?  'Please enter username' : 'Please enter new username'}</p>
       <form method="dialog" className="join">
-        <input className="input input-bordered join-item" value={username} onChange={(e) => setUsername(e.target.value)} ></input>
+        <input className="input input-bordered join-item" value={inputName} ref={inputElement} onChange={(e) => setInputName(e.target.value)}  ></input>
         <button
           className="btn btn-secondary join-item"
           onClick={handleAddUsername}
         >
-          Queue
+          Add
         </button>
       </form>
     </div>
     <form method="dialog" className="modal-backdrop">
-    <button>close</button>
-  </form>
+      <button onClick={() => setShowModal(false)}>close</button>
+    </form>
   </dialog>
   );
 };
