@@ -11,7 +11,9 @@ const Modal = ({setUsername, showModal, setShowModal }) => {
   };
 
   const inputElement = useRef()
-
+  if(localStorage.getItem('username')){
+    setShowModal(false)
+  }
   if(!showModal) return null
 
   return (
