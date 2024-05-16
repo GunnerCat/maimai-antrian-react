@@ -3,6 +3,7 @@ import { useRef, useState } from "react";
 /* eslint-disable react/prop-types */
 const Modal = ({setUsername, showModal, setShowModal }) => {
   const [inputName, setInputName] = useState(null)
+  
   const handleAddUsername = () => {
     const username = inputElement.current.value
     localStorage.setItem("username", username);
@@ -11,9 +12,6 @@ const Modal = ({setUsername, showModal, setShowModal }) => {
   };
 
   const inputElement = useRef()
-  if(localStorage.getItem('username')){
-    setShowModal(false)
-  }
   if(!showModal) return null
 
   return (
