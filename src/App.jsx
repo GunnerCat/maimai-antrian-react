@@ -21,13 +21,32 @@ import {
 import { SortableItem } from "./components/SortableList/SortableList.jsx";
 
 export default function App() {
-  const [names, setNames] = useState([
-    'pieter',
-    'aaron',
-    'racel',
-    'emir',
-    'rehan',
-  ]);
+  const [players, setPlayers] = useState([
+    {
+    id:"1",
+    name:"Pieter"
+    },
+    {
+    id:"2",
+    name:"Aaron"
+    },
+    {
+    id:"3",
+    name:"Racel"
+    },
+    {
+    id:"4",
+    name:"Emir"
+    },
+    {
+    id:"5",
+    name:"Rehan"
+    },
+    {
+    id:"6",
+    name:"Emir"
+    },]
+  );
   const [name, setName] = useState('');
   const [username, setUsername] = useState(localStorage.getItem("username"));
   const [showModal, setShowModal] = useState(true);
@@ -40,16 +59,21 @@ export default function App() {
   );
 
   function handleAddPlayer() {
-    setNames([...names, name]);
+    const newPlayer ={
+      id:Date.now().toString(),
+      name:name
+    }
+    console.log(Date.now().toString())
+    setPlayers(players =>[...players, newPlayer])
     setName('')
   }
 
   const [text, setText] = useState('Input Username');
 
   // function handleRemovePlayer() {
-  //   const newNames = [...names]; // Create a shallow copy of the names array
-  //   newNames.splice(0, 2); // Remove the first two items
-  //   setNames(newNames);
+  //   const newPlayers = [...players]; // Create a shallow copy of the players array
+  //   newPlayers.splice(0, 1); // Remove the first two items
+  //   setPlayers(newPlayers);
   // }
   
   useEffect(() => {
@@ -59,7 +83,7 @@ export default function App() {
     else{
       setText(`Input Username`);
     }
-  }, [username]);
+  }, [username,players]);
 
   return (
     <div className='bg-creamy flex justify-center'>
@@ -83,9 +107,9 @@ export default function App() {
               collisionDetection={closestCenter}
               onDragEnd={handleDragEnd}
             >
-              <SortableContext items={names} strategy={verticalListSortingStrategy}>
-                {names.map((name,index ) => (
-                  <SortableItem key={name} name={name} idx={index} itemSize={names.length} />
+              <SortableContext items={players.map((player) => player.id)} strategy={verticalListSortingStrategy}>
+                {players?.map((player,index) => (
+                  <SortableItem key={player.id} id={player.id} name={player.name} idx={index} itemSize={players.length} />
                 ))}
               </SortableContext>
             </DndContext>
@@ -112,13 +136,13 @@ export default function App() {
   );
   function handleDragEnd(event) {
     const { active, over } = event;
-
+  
     if (active.id !== over.id) {
-      setNames((names) => {
-        const oldIndex = names.indexOf(active.id);
-        const newIndex = names.indexOf(over.id);
-
-        return arrayMove(names, oldIndex, newIndex);
+      setPlayers((players) => {
+        const oldIndex = players.findIndex((player) => player.id === active.id);
+        const newIndex = players.findIndex((player) => player.id === over.id);
+  
+        return arrayMove(players, oldIndex, newIndex);
       });
     }
   }
