@@ -2,13 +2,39 @@ import { useRef, useState } from "react";
 
 /* eslint-disable react/prop-types */
 const Modal = ({setUsername, showModal, setShowModal }) => {
-  const [inputName, setInputName] = useState(null)
+  const [inputName, setInputName] = useState("")
   
-  const handleAddUsername = () => {
-    const username = inputElement.current.value
-    localStorage.setItem("username", username);
-    setUsername(localStorage.getItem("username"))
-    setShowModal(false)
+  const handleUsernameSubmit = async () => {
+    if (localStorage.getItem("username") === null) {
+      localStorage.setItem("username", inputName);
+      localStorage.setItem("id",1716310450447)
+      setUsername(inputName)
+      const requestOptions = {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: 1716310450447 , name: inputName })
+      };
+      await fetch('http://localhost:3000/users/store', requestOptions ).then((response) => {
+        response.json().then((data) => {
+          console.log("the data is", data);
+        });
+      });
+      setShowModal(false)
+    }
+    else{
+      const id = localStorage.getItem("id")
+      localStorage.setItem("username", inputName);
+      setUsername(inputName)
+
+      const requestOptions = {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: inputName })
+      };
+      await fetch(`http://localhost:3000/users/update/${id}`, requestOptions )
+      .then(response => response.json());
+      setShowModal(false)
+    }
   };
 
   const inputElement = useRef()
@@ -22,7 +48,7 @@ const Modal = ({setUsername, showModal, setShowModal }) => {
         <input className="input input-bordered join-item" value={inputName} ref={inputElement} onChange={(e) => setInputName(e.target.value)}  ></input>
         <button
           className="btn btn-secondary join-item"
-          onClick={handleAddUsername}
+          onClick={handleUsernameSubmit}
         >
           Add
         </button>
