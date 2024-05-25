@@ -20,12 +20,12 @@ import {
 
 import { SortableItem } from "./components/SortableList/SortableList.jsx";
 import { DroppableArea } from "./components/droppableArea/droppableArea.jsx";
-import { dummyPlayers } from "./data/dummyData";
 
 export default function App() {
   // Local player testing / datas
-  const [players, setPlayers] = useState(dummyPlayers);
-  const [droppedPlayers, setDroppedPlayers] = useState([]);
+  const [players, setPlayers] = useState([]);
+  const [originalPlayers, setOriginalPlayers] = useState([]);
+  const [hasChanges, setHasChanges] = useState(false);
 
   const [username, setUsername] = useState(localStorage.getItem("username"));
 
@@ -46,13 +46,12 @@ export default function App() {
     if (!over) return;
 
     if (over.id === "droppable") {
-      setPlayers((players) =>
-        players.filter((player) => player.id !== active.id)
-      );
-      setDroppedPlayers((droppedPlayers) => [
-        ...droppedPlayers,
-        players.find((player) => player.id === active.id),
-      ]);
+      const player = players.find((player) => player.id === active.id);
+      if (player) {
+        setPlayers((players) =>
+          players.filter((player) => player.id !== active.id)
+        );
+      }
     } else {
       const oldIndex = players.findIndex((player) => player.id === active.id);
       const newIndex = players.findIndex((player) => player.id === over.id);
@@ -60,12 +59,7 @@ export default function App() {
       setPlayers((players) => arrayMove(players, oldIndex, newIndex));
     }
   };
-  // function handleRemovePlayer() {
-  //   const newPlayers = [...players]; // Create a shallow copy of the players array
-  //   newPlayers.splice(0, 1); // Remove the first two items
-  //   setPlayers(newPlayers);
-  // }
-  
+
   // Form and validation
   const [fields, setFields] = useState({});
   const [errors, setErrors] = useState({});
@@ -126,15 +120,49 @@ export default function App() {
         name: item,
       }));
       setPlayers(players);
+      setOriginalPlayers(players);
     } catch (error) {
       console.error("Error fetching player data:", error);
     }
   };
 
   useEffect(() => {
-    console.log("happened");
     fetchData();
   }, []);
+
+  const convertPlayersToString = (players) => {
+    return players.map((player) => player.name).join(",");
+  };
+
+  useEffect(() => {
+    setHasChanges(JSON.stringify(players) !== JSON.stringify(originalPlayers));
+  }, [players]);
+
+  const handleSave = async () => {
+    const playerString = convertPlayersToString(players);
+    try {
+      const response = await fetch("http://localhost:3000/players", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ name_lists: playerString }),
+      });
+      if (response.ok) {
+        setOriginalPlayers(players);
+        setHasChanges(false);
+        alert("Changes saved!");
+      } else {
+        console.error("Failed to save changes.");
+      }
+    } catch (error) {
+      console.error("Error saving changes:", error);
+    }
+  };
+
+  const handleCancel = () => {
+    setPlayers(originalPlayers);
+  };
 
   return (
     <div className="bg-creamy flex justify-center">
@@ -163,51 +191,68 @@ export default function App() {
               collisionDetection={closestCenter}
               onDragEnd={handleDragEnd}
             >
-              <SortableContext
-                items={players.map((player) => player.id)}
-                strategy={verticalListSortingStrategy}
-              >
-                {players?.map((player, index) => (
-                  <SortableItem
-                    key={player.id}
-                    id={player.id}
-                    name={player.name}
-                    idx={index}
-                    itemSize={players.length}
-                  />
-                ))}
-              </SortableContext>
+              <div className="mb-5">
+                <SortableContext
+                  items={players.map((player) => player.id)}
+                  strategy={verticalListSortingStrategy}
+                >
+                  {players
+                    ? players.map((player, index) => (
+                        <SortableItem
+                          key={player.id}
+                          id={player.id}
+                          name={player.name}
+                          idx={index}
+                          itemSize={players.length}
+                        />
+                      ))
+                    : "nothing"}
+                </SortableContext>
+              </div>
+
+              <form onSubmit={(e) => playerSubmit(e)}>
+                <div className="join flex justify-center">
+                  <input
+                    className="input input-bordered join-item"
+                    value={fields["name"]}
+                    onChange={(e) => handleChange("name", e.target.value)}
+                  ></input>
+                  <button
+                    type="submit"
+                    id="submit"
+                    value="submit"
+                    className="btn btn-secondary join-item"
+                  >
+                    Queue
+                  </button>
+                </div>
+                <div className="flex justify-center mb-5">
+                  <span className="text-error">{errors["name"]}</span>
+                </div>
+              </form>
 
               {/* Droppable Area */}
-              <DroppableArea id="droppable">
-                <h3>Dropped Players</h3>
-                {droppedPlayers.map((player) => (
-                  <div key={player.id}>{player.name}</div>
-                ))}
-              </DroppableArea>
+              <div className="flex justify-center">
+                <DroppableArea id="droppable">
+                  <h3>Remove Player here</h3>
+                </DroppableArea>
+              </div>
             </DndContext>
           </div>
           {/* Form */}
-          <form onSubmit={(e) => playerSubmit(e)}>
-            <div className="join flex justify-center">
-              <input
-                className="input input-bordered join-item"
-                value={fields["name"]}
-                onChange={(e) => handleChange("name", e.target.value)}
-              ></input>
-              <button
-                type="submit"
-                id="submit"
-                value="submit"
-                className="btn btn-secondary join-item"
-              >
-                Queue
-              </button>
-            </div>
-            <div className="flex justify-center mb-5">
-              <span className="text-error">{errors["name"]}</span>
-            </div>
-          </form>
+
+          <div className="flex justify-center mb-5">
+            <button
+              className="btn bg-teal-200 mr-2"
+              disabled={!hasChanges}
+              onClick={handleSave}
+            >
+              Save
+            </button>
+            <button className="btn btn-secondary" onClick={handleCancel}>
+              Cancel
+            </button>
+          </div>
           <div className="flex justify-center">
             <button className="btn w-52" onClick={() => setShowModal(true)}>
               {text}

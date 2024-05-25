@@ -5,15 +5,9 @@ export function DroppableArea({ id, children }) {
     id,
   });
 
-  const style = {
-    backgroundColor: isOver ? 'lightgreen' : 'lightgray',
-    padding: '20px',
-    marginTop: '20px',
-    borderRadius: '5px',
-  };
 
   return (
-    <div ref={setNodeRef} style={style}>
+    <div className={`p-5 rounded-md ${isOver ? 'bg-red-500' : 'bg-gray-100'}`} ref={setNodeRef} >
       {children}
     </div>
   );
