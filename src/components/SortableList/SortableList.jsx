@@ -15,7 +15,7 @@ export function SortableItem({ key, id, name , idx, itemSize}) {
         key={id}
         className={`touch-none p-4 bg-amber-100 border-solid border-b border-x min-w-80 border-gray-800 w-1/2 ${idx === 0 ? 'rounded-t-lg border-t' : ''} ${idx === itemSize-1 ? 'rounded-b-lg' : ''}`}
       >
-        <span className="flex justify-center">{name+' '+idx}</span>
+        <span className="flex justify-center">{name}</span>
       </div>
     </div>
   );
