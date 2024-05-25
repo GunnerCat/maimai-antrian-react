@@ -19,19 +19,20 @@ import {
 } from "@dnd-kit/sortable";
 
 import { SortableItem } from "./components/SortableList/SortableList.jsx";
-
+import { DroppableArea } from "./components/droppableArea/droppableArea.jsx";
 import { dummyPlayers } from "./data/dummyData";
 
 export default function App() {
-  //local player testing / datas
+  // Local player testing / datas
   const [players, setPlayers] = useState(dummyPlayers);
+  const [droppedPlayers, setDroppedPlayers] = useState([]);
 
   const [username, setUsername] = useState(localStorage.getItem("username"));
 
-  //modal
+  // Modal
   const [showModal, setShowModal] = useState(false);
 
-  //dnd
+  // DnD
   const sensors = useSensors(
     useSensor(PointerSensor),
     useSensor(KeyboardSensor, {
@@ -42,46 +43,32 @@ export default function App() {
   const handleDragEnd = (event) => {
     const { active, over } = event;
 
-    if (active.id !== over.id) {
-      setPlayers((players) => {
-        const oldIndex = players.findIndex((player) => player.id === active.id);
-        const newIndex = players.findIndex((player) => player.id === over.id);
+    if (!over) return;
 
-        return arrayMove(players, oldIndex, newIndex);
-      });
+    if (over.id === "droppable") {
+      setPlayers((players) =>
+        players.filter((player) => player.id !== active.id)
+      );
+      setDroppedPlayers((droppedPlayers) => [
+        ...droppedPlayers,
+        players.find((player) => player.id === active.id),
+      ]);
+    } else {
+      const oldIndex = players.findIndex((player) => player.id === active.id);
+      const newIndex = players.findIndex((player) => player.id === over.id);
+
+      setPlayers((players) => arrayMove(players, oldIndex, newIndex));
     }
   };
-
   // function handleRemovePlayer() {
   //   const newPlayers = [...players]; // Create a shallow copy of the players array
   //   newPlayers.splice(0, 1); // Remove the first two items
   //   setPlayers(newPlayers);
   // }
-
-  //form and validation
+  
+  // Form and validation
   const [fields, setFields] = useState({});
   const [errors, setErrors] = useState({});
-
-  // ********** */
-  // DEBUGGGGGG
-  // ********** */
-  const DEBUGADDPLAYERBUTTON = () => {
-    fetch("http://localhost:3000/players", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        id: Date.now(),
-        name_lists: "Pieter,Jason,Aaron,Racel,Rehan,Emir,Donny",
-      }),
-    })
-      .then((res) => res.json())
-      .then((data) => console.log(data));
-  };
-  // ********** */
-  // DEBUGGGGGG
-  // ********** */
 
   const handleValidation = () => {
     const formFields = { ...fields };
@@ -98,6 +85,7 @@ export default function App() {
     setErrors(formErrors);
     return formIsValid;
   };
+
   const handleChange = (field, value) => {
     setFields({
       ...fields,
@@ -118,15 +106,16 @@ export default function App() {
     }
   };
 
-  //text
+  // Text
   const [text, setText] = useState("Input Username");
-  //useEffect
+
+  // useEffect
   useEffect(() => {
     if (!username) setShowModal(true);
     setText(username ? "Change Username" : "Input Username");
   }, [username]);
 
-  //post method
+  // Fetch data
   const fetchData = async () => {
     try {
       const response = await fetch("http://localhost:3000/players");
@@ -138,10 +127,12 @@ export default function App() {
       }));
       setPlayers(players);
     } catch (error) {
-      console((error) => console.error("Error fetching player data:", error));
+      console.error("Error fetching player data:", error);
     }
   };
+
   useEffect(() => {
+    console.log("happened");
     fetchData();
   }, []);
 
@@ -155,14 +146,18 @@ export default function App() {
         />
         <header className="flex flex-col item-center mb-5 justify-center">
           <div className="flex justify-center">
-            <img src={BemacoLogo} className="object-cover justify-bottom"></img>
+            <img
+              src={BemacoLogo}
+              className="object-cover justify-bottom"
+              alt="Bemaco Logo"
+            ></img>
           </div>
           <div className="flex">Antrian Maimai Hari ini</div>
           <div className="flex">Day, DD/MM/YYYY</div>
         </header>
         <div className="min-h-50vh mb-5 flex flex-col justify-center">
           <div className="mb-5 flex flex-col items-center">
-            {/* table */}
+            {/* Table */}
             <DndContext
               sensors={sensors}
               collisionDetection={closestCenter}
@@ -182,9 +177,17 @@ export default function App() {
                   />
                 ))}
               </SortableContext>
+
+              {/* Droppable Area */}
+              <DroppableArea id="droppable">
+                <h3>Dropped Players</h3>
+                {droppedPlayers.map((player) => (
+                  <div key={player.id}>{player.name}</div>
+                ))}
+              </DroppableArea>
             </DndContext>
           </div>
-          {/* form */}
+          {/* Form */}
           <form onSubmit={(e) => playerSubmit(e)}>
             <div className="join flex justify-center">
               <input
@@ -197,7 +200,6 @@ export default function App() {
                 id="submit"
                 value="submit"
                 className="btn btn-secondary join-item"
-                // onClick={handleAddPlayer}
               >
                 Queue
               </button>
@@ -208,11 +210,6 @@ export default function App() {
           </form>
           <div className="flex justify-center">
             <button className="btn w-52" onClick={() => setShowModal(true)}>
-              {text}
-            </button>
-          </div>
-          <div className="flex justify-center">
-            <button className="btn w-52" onClick={DEBUGADDPLAYERBUTTON}>
               {text}
             </button>
           </div>
