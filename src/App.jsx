@@ -20,34 +20,12 @@ import {
 
 import { SortableItem } from "./components/SortableList/SortableList.jsx";
 
+import { dummyPlayers } from "./data/dummyData";
+
 export default function App() {
   //local player testing / datas
-  const [players, setPlayers] = useState([
-    {
-      id: "1",
-      name: "Pieter",
-    },
-    {
-      id: "2",
-      name: "Aaron",
-    },
-    {
-      id: "3",
-      name: "Racel",
-    },
-    {
-      id: "4",
-      name: "Emir",
-    },
-    {
-      id: "5",
-      name: "Rehan",
-    },
-    {
-      id: "6",
-      name: "Emir",
-    },
-  ]);
+  const [players, setPlayers] = useState(dummyPlayers);
+
   const [username, setUsername] = useState(localStorage.getItem("username"));
 
   //modal
@@ -61,14 +39,18 @@ export default function App() {
     })
   );
 
-  // const handleAddPlayer=()=> {
-  //   const newPlayer ={
-  //     id:Date.now().toString(),
-  //     name:name
-  //   }
-  //   setPlayers(players =>[...players, newPlayer])
-  //   setName(null)
-  // }
+  const handleDragEnd = (event) => {
+    const { active, over } = event;
+
+    if (active.id !== over.id) {
+      setPlayers((players) => {
+        const oldIndex = players.findIndex((player) => player.id === active.id);
+        const newIndex = players.findIndex((player) => player.id === over.id);
+
+        return arrayMove(players, oldIndex, newIndex);
+      });
+    }
+  };
 
   // function handleRemovePlayer() {
   //   const newPlayers = [...players]; // Create a shallow copy of the players array
@@ -79,6 +61,27 @@ export default function App() {
   //form and validation
   const [fields, setFields] = useState({});
   const [errors, setErrors] = useState({});
+
+  // ********** */
+  // DEBUGGGGGG
+  // ********** */
+  const DEBUGADDPLAYERBUTTON = () => {
+    fetch("http://localhost:3000/players", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        id: Date.now(),
+        name_lists: "Pieter,Jason,Aaron,Racel,Rehan,Emir,Donny",
+      }),
+    })
+      .then((res) => res.json())
+      .then((data) => console.log(data));
+  };
+  // ********** */
+  // DEBUGGGGGG
+  // ********** */
 
   const handleValidation = () => {
     const formFields = { ...fields };
@@ -95,13 +98,13 @@ export default function App() {
     setErrors(formErrors);
     return formIsValid;
   };
-
   const handleChange = (field, value) => {
     setFields({
       ...fields,
       [field]: value,
     });
   };
+
   const playerSubmit = (e) => {
     e.preventDefault();
     if (handleValidation()) {
@@ -120,12 +123,27 @@ export default function App() {
   //useEffect
   useEffect(() => {
     if (!username) setShowModal(true);
-    if (username) {
-      setText(`Change Username`);
-    } else {
-      setText(`Input Username`);
-    }
+    setText(username ? "Change Username" : "Input Username");
   }, [username]);
+
+  //post method
+  const fetchData = async () => {
+    try {
+      const response = await fetch("http://localhost:3000/players");
+      const data = await response.json();
+      const arrayData = data.name_lists.split(",");
+      const players = arrayData.map((item, index) => ({
+        id: index + 1,
+        name: item,
+      }));
+      setPlayers(players);
+    } catch (error) {
+      console((error) => console.error("Error fetching player data:", error));
+    }
+  };
+  useEffect(() => {
+    fetchData();
+  }, []);
 
   return (
     <div className="bg-creamy flex justify-center">
@@ -186,11 +204,15 @@ export default function App() {
             </div>
             <div className="flex justify-center mb-5">
               <span className="text-error">{errors["name"]}</span>
-              {console.log(showModal)}
             </div>
           </form>
           <div className="flex justify-center">
             <button className="btn w-52" onClick={() => setShowModal(true)}>
+              {text}
+            </button>
+          </div>
+          <div className="flex justify-center">
+            <button className="btn w-52" onClick={DEBUGADDPLAYERBUTTON}>
               {text}
             </button>
           </div>
@@ -199,16 +221,4 @@ export default function App() {
       </div>
     </div>
   );
-  function handleDragEnd(event) {
-    const { active, over } = event;
-
-    if (active.id !== over.id) {
-      setPlayers((players) => {
-        const oldIndex = players.findIndex((player) => player.id === active.id);
-        const newIndex = players.findIndex((player) => player.id === over.id);
-
-        return arrayMove(players, oldIndex, newIndex);
-      });
-    }
-  }
 }
