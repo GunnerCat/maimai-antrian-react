@@ -69,10 +69,11 @@ export default function App() {
     const formErrors = {};
     let formIsValid = true;
     if (!formFields["name"]) {
+      console.log("name is empty")
       formIsValid = false;
       formErrors["name"] = "Name cannot be empty";
     }
-    if (formFields["name"].length > 30) {
+    else if (formFields["name"].length > 30) {
       formIsValid = false;
       formErrors["name"] = "Name cannot be more than 30 characters";
     }
