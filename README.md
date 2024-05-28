@@ -6,7 +6,7 @@
 - [x] Connect Backend to Modal
 - [x] Create player system with backend
 - [x] On Change, add new name_lists in player_queue BE
-- [ ] Remove a player 
+- [x] Remove a player 
 - [ ] Release (????)
 
 # UI shenanigans / Code Improvement
