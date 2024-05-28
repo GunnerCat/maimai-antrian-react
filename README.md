@@ -7,6 +7,7 @@
 - [x] Create player system with backend
 - [x] On Change, add new name_lists in player_queue BE
 - [x] Remove a player 
+- [ ] Create Log for user interaction
 - [ ] Release (????)
 
 # UI shenanigans / Code Improvement
