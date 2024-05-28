@@ -172,6 +172,16 @@ export default function App() {
   const handleCancel = () => {
     setPlayers(originalPlayers);
   };
+  const timeNow = () => {
+    const date = new Date("2024-05-28");
+    const options = {
+      weekday: "long",
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    };
+    return date.toLocaleDateString("en-GB", options).replace(",", "");
+  };
 
   return (
     <div className="bg-creamy flex justify-center">
@@ -190,7 +200,7 @@ export default function App() {
             ></img>
           </div>
           <div className="flex">Antrian Maimai Hari ini</div>
-          <div className="flex">Day, DD/MM/YYYY</div>
+          <div className="flex">{timeNow()}</div>
         </header>
         <div className="min-h-50vh mb-5 flex flex-col justify-center">
           <div className="mb-5 flex flex-col items-center">
@@ -201,7 +211,7 @@ export default function App() {
               onDragStart={handleDragStart}
               onDragEnd={handleDragEnd}
             >
-              <div className="mb-5">
+              <div className="mb-5 p-5 bg-rose-500 rounded-lg">
                 <SortableContext
                   items={players.map((player) => player.id)}
                   strategy={verticalListSortingStrategy}
@@ -220,7 +230,7 @@ export default function App() {
                 </SortableContext>
                 <DragOverlay
                   dropAnimation={{
-                    duration: 100,
+                    duration: 250,
                     easing: "cubic-bezier(0.18, 0.67, 0.6, 1.22)",
                   }}
                 >
