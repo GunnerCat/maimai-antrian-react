@@ -1,3 +1,4 @@
+// App.jsx
 import { useState, useEffect } from "react";
 import Modal from "./components/Modal/Modal.jsx";
 import BemacoLogo from "./assets/BemacoLogo.png";
@@ -5,11 +6,12 @@ import "./App.css";
 
 import {
   DndContext,
-  closestCenter,
   KeyboardSensor,
   PointerSensor,
   useSensor,
   useSensors,
+  rectIntersection,
+  DragOverlay,
 } from "@dnd-kit/core";
 import {
   arrayMove,
@@ -40,9 +42,16 @@ export default function App() {
     })
   );
 
+  const [activeItem, setActiveItem] = useState(null);
+  const handleDragStart = (event) => {
+    console.log(event.active.id);
+    console.log(players.find((player) => player.id === event.active.id));
+    setActiveItem(players.find((player) => player.id === event.active.id));
+  };
+
   const handleDragEnd = (event) => {
     const { active, over } = event;
-
+    setActiveItem(null);
     if (!over) return;
 
     if (over.id === "droppable") {
@@ -69,11 +78,9 @@ export default function App() {
     const formErrors = {};
     let formIsValid = true;
     if (!formFields["name"]) {
-      console.log("name is empty")
       formIsValid = false;
       formErrors["name"] = "Name cannot be empty";
-    }
-    else if (formFields["name"].length > 30) {
+    } else if (formFields["name"].length > 30) {
       formIsValid = false;
       formErrors["name"] = "Name cannot be more than 30 characters";
     }
@@ -96,6 +103,7 @@ export default function App() {
         name: fields["name"],
       };
       setPlayers((players) => [...players, newPlayer]);
+      fields["name"] = "";
     } else {
       console.log("Form has errors.");
     }
@@ -189,7 +197,8 @@ export default function App() {
             {/* Table */}
             <DndContext
               sensors={sensors}
-              collisionDetection={closestCenter}
+              collisionDetection={rectIntersection}
+              onDragStart={handleDragStart}
               onDragEnd={handleDragEnd}
             >
               <div className="mb-5">
@@ -209,6 +218,24 @@ export default function App() {
                       ))
                     : "nothing"}
                 </SortableContext>
+                <DragOverlay
+                  dropAnimation={{
+                    duration: 100,
+                    easing: "cubic-bezier(0.18, 0.67, 0.6, 1.22)",
+                  }}
+                >
+                  {activeItem ? (
+                    <SortableItem
+                      key={activeItem.id}
+                      id={activeItem.id}
+                      name={activeItem.name}
+                      idx={players.findIndex(
+                        (player) => player.id === activeItem.id
+                      )}
+                      itemSize={players.length}
+                    />
+                  ) : null}
+                </DragOverlay>
               </div>
 
               <form onSubmit={(e) => playerSubmit(e)}>
