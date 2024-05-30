@@ -1,8 +1,8 @@
 // App.jsx
-import { useState, useEffect } from "react";
-import Modal from "./components/Modal/Modal.jsx";
-import BemacoLogo from "./assets/BemacoLogo.png";
-import "./App.css";
+import { useState, useEffect } from 'react'
+import Modal from './components/Modal/Modal.jsx'
+import BemacoLogo from './assets/BemacoLogo.png'
+import './App.css'
 
 import {
   DndContext,
@@ -11,177 +11,177 @@ import {
   useSensor,
   useSensors,
   rectIntersection,
-  DragOverlay,
-} from "@dnd-kit/core";
+  DragOverlay
+} from '@dnd-kit/core'
 import {
   arrayMove,
   SortableContext,
   sortableKeyboardCoordinates,
-  verticalListSortingStrategy,
-} from "@dnd-kit/sortable";
+  verticalListSortingStrategy
+} from '@dnd-kit/sortable'
 
-import { SortableItem } from "./components/SortableList/SortableList.jsx";
-import { DroppableArea } from "./components/droppableArea/droppableArea.jsx";
+import { SortableItem } from './components/SortableList/SortableList.jsx'
+import { DroppableArea } from './components/droppableArea/droppableArea.jsx'
 
 export default function App() {
   // Local player testing / datas
-  const [players, setPlayers] = useState([]);
-  const [originalPlayers, setOriginalPlayers] = useState([]);
-  const [hasChanges, setHasChanges] = useState(false);
+  const [players, setPlayers] = useState([])
+  const [originalPlayers, setOriginalPlayers] = useState([])
+  const [hasChanges, setHasChanges] = useState(false)
 
-  const [username, setUsername] = useState(localStorage.getItem("username"));
+  const [username, setUsername] = useState(localStorage.getItem('username'))
 
   // Modal
-  const [showModal, setShowModal] = useState(false);
+  const [showModal, setShowModal] = useState(false)
 
   // DnD
   const sensors = useSensors(
     useSensor(PointerSensor),
     useSensor(KeyboardSensor, {
-      coordinateGetter: sortableKeyboardCoordinates,
+      coordinateGetter: sortableKeyboardCoordinates
     })
-  );
+  )
 
-  const [activeItem, setActiveItem] = useState(null);
+  const [activeItem, setActiveItem] = useState(null)
   const handleDragStart = (event) => {
-    console.log(event.active.id);
-    console.log(players.find((player) => player.id === event.active.id));
-    setActiveItem(players.find((player) => player.id === event.active.id));
-  };
+    console.log(event.active.id)
+    console.log(players.find((player) => player.id === event.active.id))
+    setActiveItem(players.find((player) => player.id === event.active.id))
+  }
 
   const handleDragEnd = (event) => {
-    const { active, over } = event;
-    setActiveItem(null);
-    if (!over) return;
+    const { active, over } = event
+    setActiveItem(null)
+    if (!over) return
 
-    if (over.id === "droppable") {
-      const player = players.find((player) => player.id === active.id);
+    if (over.id === 'droppable') {
+      const player = players.find((player) => player.id === active.id)
       if (player) {
         setPlayers((players) =>
           players.filter((player) => player.id !== active.id)
-        );
+        )
       }
     } else {
-      const oldIndex = players.findIndex((player) => player.id === active.id);
-      const newIndex = players.findIndex((player) => player.id === over.id);
+      const oldIndex = players.findIndex((player) => player.id === active.id)
+      const newIndex = players.findIndex((player) => player.id === over.id)
 
-      setPlayers((players) => arrayMove(players, oldIndex, newIndex));
+      setPlayers((players) => arrayMove(players, oldIndex, newIndex))
     }
-  };
+  }
 
   // Form and validation
-  const [fields, setFields] = useState({});
-  const [errors, setErrors] = useState({});
+  const [fields, setFields] = useState({})
+  const [errors, setErrors] = useState({})
 
   const handleValidation = () => {
-    const formFields = { ...fields };
-    const formErrors = {};
-    let formIsValid = true;
-    if (!formFields["name"]) {
-      formIsValid = false;
-      formErrors["name"] = "Name cannot be empty";
-    } else if (formFields["name"].length > 30) {
-      formIsValid = false;
-      formErrors["name"] = "Name cannot be more than 30 characters";
+    const formFields = { ...fields }
+    const formErrors = {}
+    let formIsValid = true
+    if (!formFields['name']) {
+      formIsValid = false
+      formErrors['name'] = 'Name cannot be empty'
+    } else if (formFields['name'].length > 30) {
+      formIsValid = false
+      formErrors['name'] = 'Name cannot be more than 30 characters'
     }
-    setErrors(formErrors);
-    return formIsValid;
-  };
+    setErrors(formErrors)
+    return formIsValid
+  }
 
   const handleChange = (field, value) => {
     setFields({
       ...fields,
-      [field]: value,
-    });
-  };
+      [field]: value
+    })
+  }
 
   const playerSubmit = (e) => {
-    e.preventDefault();
+    e.preventDefault()
     if (handleValidation()) {
       const newPlayer = {
         id: Date.now().toString(),
-        name: fields["name"],
-      };
-      setPlayers((players) => [...players, newPlayer]);
-      fields["name"] = "";
+        name: fields['name']
+      }
+      setPlayers((players) => [...players, newPlayer])
+      fields['name'] = ''
     } else {
-      console.log("Form has errors.");
+      console.log('Form has errors.')
     }
-  };
+  }
 
   // Text
-  const [text, setText] = useState("Input Username");
+  const [text, setText] = useState('Input Username')
 
   // useEffect
   useEffect(() => {
-    if (!username) setShowModal(true);
-    setText(username ? "Change Username" : "Input Username");
-  }, [username]);
+    if (!username) setShowModal(true)
+    setText(username ? 'Change Username' : 'Input Username')
+  }, [username])
 
   // Fetch data
   const fetchData = async () => {
     try {
-      const response = await fetch("http://localhost:3000/players");
-      const data = await response.json();
-      const arrayData = data.name_lists.split(",");
+      const response = await fetch('http://localhost:3000/players')
+      const data = await response.json()
+      const arrayData = data.name_lists.split(',')
       const players = arrayData.map((item, index) => ({
         id: index + 1,
-        name: item,
-      }));
-      setPlayers(players);
-      setOriginalPlayers(players);
+        name: item
+      }))
+      setPlayers(players)
+      setOriginalPlayers(players)
     } catch (error) {
-      console.error("Error fetching player data:", error);
+      console.error('Error fetching player data:', error)
     }
-  };
+  }
 
   useEffect(() => {
-    fetchData();
-  }, []);
+    fetchData()
+  }, [])
 
   const convertPlayersToString = (players) => {
-    return players.map((player) => player.name).join(",");
-  };
+    return players.map((player) => player.name).join(',')
+  }
 
   useEffect(() => {
-    setHasChanges(JSON.stringify(players) !== JSON.stringify(originalPlayers));
-  }, [players]);
+    setHasChanges(JSON.stringify(players) !== JSON.stringify(originalPlayers))
+  }, [players])
 
   const handleSave = async () => {
-    const playerString = convertPlayersToString(players);
+    const playerString = convertPlayersToString(players)
     try {
-      const response = await fetch("http://localhost:3000/players", {
-        method: "POST",
+      const response = await fetch('http://localhost:3000/players', {
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ name_lists: playerString }),
-      });
+        body: JSON.stringify({ name_lists: playerString })
+      })
       if (response.ok) {
-        setOriginalPlayers(players);
-        setHasChanges(false);
-        alert("Changes saved!");
+        setOriginalPlayers(players)
+        setHasChanges(false)
+        alert('Changes saved!')
       } else {
-        console.error("Failed to save changes.");
+        console.error('Failed to save changes.')
       }
     } catch (error) {
-      console.error("Error saving changes:", error);
+      console.error('Error saving changes:', error)
     }
-  };
+  }
 
   const handleCancel = () => {
-    setPlayers(originalPlayers);
-  };
+    setPlayers(originalPlayers)
+  }
   const timeNow = () => {
-    const date = new Date("2024-05-28");
+    const date = new Date('2024-05-28')
     const options = {
-      weekday: "long",
-      day: "2-digit",
-      month: "2-digit",
-      year: "numeric",
-    };
-    return date.toLocaleDateString("en-GB", options).replace(",", "");
-  };
+      weekday: 'long',
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric'
+    }
+    return date.toLocaleDateString('en-GB', options).replace(',', '')
+  }
 
   return (
     <div className="bg-creamy flex justify-center">
@@ -212,48 +212,50 @@ export default function App() {
               onDragEnd={handleDragEnd}
             >
               <div className="mb-5 p-5 bg-rose-500 rounded-lg">
-                <SortableContext
-                  items={players.map((player) => player.id)}
-                  strategy={verticalListSortingStrategy}
-                >
-                  {players
-                    ? players.map((player, index) => (
-                        <SortableItem
-                          key={player.id}
-                          id={player.id}
-                          name={player.name}
-                          idx={index}
-                          itemSize={players.length}
-                        />
-                      ))
-                    : "nothing"}
-                </SortableContext>
-                <DragOverlay
-                  dropAnimation={{
-                    duration: 250,
-                    easing: "cubic-bezier(0.18, 0.67, 0.6, 1.22)",
-                  }}
-                >
-                  {activeItem ? (
-                    <SortableItem
-                      key={activeItem.id}
-                      id={activeItem.id}
-                      name={activeItem.name}
-                      idx={players.findIndex(
-                        (player) => player.id === activeItem.id
-                      )}
-                      itemSize={players.length}
-                    />
-                  ) : null}
-                </DragOverlay>
+                <div className="rounded-lg overflow-hidden gap-0.5 flex flex-col ">
+                  <SortableContext
+                    items={players.map((player) => player.id)}
+                    strategy={verticalListSortingStrategy}
+                  >
+                    {players
+                      ? players.map((player, index) => (
+                          <SortableItem
+                            key={player.id}
+                            id={player.id}
+                            name={player.name}
+                            idx={index}
+                            itemSize={players.length}
+                          />
+                        ))
+                      : 'nothing'}
+                  </SortableContext>
+                  <DragOverlay
+                    dropAnimation={{
+                      duration: 250,
+                      easing: 'cubic-bezier(0.18, 0.67, 0.6, 1.22)'
+                    }}
+                  >
+                    {activeItem ? (
+                      <SortableItem
+                        key={activeItem.id}
+                        id={activeItem.id}
+                        name={activeItem.name}
+                        idx={players.findIndex(
+                          (player) => player.id === activeItem.id
+                        )}
+                        itemSize={players.length}
+                      />
+                    ) : null}
+                  </DragOverlay>
+                </div>
               </div>
 
               <form onSubmit={(e) => playerSubmit(e)}>
                 <div className="join flex justify-center">
                   <input
                     className="input input-bordered join-item"
-                    value={fields["name"]}
-                    onChange={(e) => handleChange("name", e.target.value)}
+                    value={fields['name']}
+                    onChange={(e) => handleChange('name', e.target.value)}
                   ></input>
                   <button
                     type="submit"
@@ -265,7 +267,7 @@ export default function App() {
                   </button>
                 </div>
                 <div className="flex justify-center mb-5">
-                  <span className="text-error">{errors["name"]}</span>
+                  <span className="text-error">{errors['name']}</span>
                 </div>
               </form>
 
@@ -300,5 +302,5 @@ export default function App() {
         <footer className="bg-maimai-background bg-center bg-cover bg-no-repeat bottom-0 w-full h-[31.25rem]"></footer>
       </div>
     </div>
-  );
+  )
 }
