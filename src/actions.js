@@ -17,6 +17,8 @@ export async function fetchPlayersQueues() {
 }
 
 export async function savePlayersQueue(playersArray) {
+  const userId = localStorage.getItem('id')
+  const roomId = '0000'
   const playerString = playersArray.map((player) => player.name).join(',')
 
   try {
@@ -28,8 +30,8 @@ export async function savePlayersQueue(playersArray) {
       body: JSON.stringify({
         players_queue: {
           players: playerString,
-          user_id: 1,
-          room_id: '0000'
+          user_id: userId,
+          room_id: roomId
         }
       })
     })
