@@ -2,7 +2,6 @@
 import { useState, useEffect } from 'react'
 import Modal from './components/Modal/Modal.jsx'
 import BemacoLogo from './assets/BemacoLogo.png'
-import './App.css'
 
 import {
   DndContext,
