@@ -218,6 +218,7 @@ export default function App() {
               alt="Bemaco Logo"
             ></img>
           </div>
+          <div>{'Hi, ' + username}</div>
           <div className="flex">Antrian Maimai Hari ini</div>
           <div className="flex">{timeNow()}</div>
         </header>
