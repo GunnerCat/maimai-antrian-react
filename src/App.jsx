@@ -22,6 +22,8 @@ import {
 import { SortableItem } from './components/SortableList.jsx'
 import { DroppableArea } from './components/DroppableArea.jsx'
 
+import { fetchPlayersQueues } from './actions.js'
+
 export default function App() {
   // Local player testing / datas
   const [players, setPlayers] = useState([])
@@ -120,13 +122,23 @@ export default function App() {
   // Fetch data
   const fetchData = async () => {
     try {
-      const response = await fetch('http://localhost:3000/players')
-      const data = await response.json()
-      const arrayData = data.name_lists.split(',')
-      const players = arrayData.map((item, index) => ({
+      // GunnarCat
+      // const response = await fetch('http://localhost:3000/players')
+      // const data = await response.json()
+      // const arrayData = data.name_lists.split(',')
+      // const players = arrayData.map((item, index) => ({
+      //   id: index + 1,
+      //   name: item
+      // }))
+
+      // youyoumu
+      const playersQueues = await fetchPlayersQueues()
+      const playersArray = playersQueues[0].players.split(',')
+      const players = playersArray.map((item, index) => ({
         id: index + 1,
         name: item
       }))
+
       setPlayers(players)
       setOriginalPlayers(players)
     } catch (error) {
