@@ -45,3 +45,29 @@ export async function savePlayersQueue(playersArray) {
     return false
   }
 }
+
+export async function signUp(name) {
+  try {
+    const response = await fetch(`${BE_URL}/users`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        user: {
+          name
+        }
+      })
+    })
+    if (response.ok) {
+      const data = await response.json()
+      return data
+    } else {
+      console.error('Response not ok')
+      return false
+    }
+  } catch (error) {
+    console.error('Failed to signUp', error)
+    return false
+  }
+}
