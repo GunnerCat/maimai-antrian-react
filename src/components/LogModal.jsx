@@ -31,9 +31,9 @@ const Modal = ({ showModal, setShowModal }) => {
         <h3 className="font-bold text-lg">Log</h3>
         <Log />
       </div>
-      <form method="dialog" className="modal-backdrop">
+      <div className="modal-backdrop">
         <button onClick={() => setShowModal(false)}>close</button>
-      </form>
+      </div>
     </dialog>
   )
 }
