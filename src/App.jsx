@@ -59,8 +59,9 @@ export default function App() {
     if (logoClickCount + 1 >= 7) {
       setShowLogModal(true)
       setLogoClickCount(0)
+    } else {
+      setLogoClickCount(logoClickCount + 1)
     }
-    setLogoClickCount(logoClickCount + 1)
   }
 
   const handleDragEnd = (event) => {
