@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react'
 import Modal from './components/Modal.jsx'
 import BemacoLogo from './assets/BemacoLogo.png'
+import LogModal from './components/LogModal.jsx'
 
 import {
   DndContext,
@@ -34,6 +35,10 @@ export default function App() {
 
   // Modal
   const [showModal, setShowModal] = useState(false)
+  const [showLogModal, setShowLogModal] = useState(false)
+
+  // Click counter for BemacoLogo
+  const [logoClickCount, setLogoClickCount] = useState(0)
 
   // DnD
   const sensors = useSensors(
@@ -48,6 +53,14 @@ export default function App() {
     console.log(event.active.id)
     console.log(players.find((player) => player.id === event.active.id))
     setActiveItem(players.find((player) => player.id === event.active.id))
+  }
+
+  const handleLogoClick = () => {
+    if (logoClickCount + 1 >= 7) {
+      setShowLogModal(true)
+      setLogoClickCount(0)
+    }
+    setLogoClickCount(logoClickCount + 1)
   }
 
   const handleDragEnd = (event) => {
@@ -210,12 +223,14 @@ export default function App() {
           showModal={showModal}
           setShowModal={setShowModal}
         />
+        <LogModal showModal={showLogModal} setShowModal={setShowLogModal} />
         <header className="flex flex-col item-center mb-5 justify-center">
           <div className="flex justify-center">
             <img
               src={BemacoLogo}
               className="object-cover justify-bottom"
               alt="Bemaco Logo"
+              onClick={handleLogoClick}
             ></img>
           </div>
           <div>{'Hi, ' + username}</div>
