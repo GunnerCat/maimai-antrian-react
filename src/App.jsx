@@ -20,7 +20,7 @@ import {
 } from '@dnd-kit/sortable'
 
 import { SortableItem } from './components/SortableList.jsx'
-import { DroppableArea } from './components/droppableArea.jsx'
+import { DroppableArea } from './components/DroppableArea.jsx'
 
 export default function App() {
   // Local player testing / datas
