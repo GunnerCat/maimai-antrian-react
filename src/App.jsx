@@ -1,6 +1,6 @@
 // App.jsx
 import { useState, useEffect } from 'react'
-import Modal from './components/Modal/Modal.jsx'
+import Modal from './components/Modal.jsx'
 import BemacoLogo from './assets/BemacoLogo.png'
 
 import {
@@ -19,8 +19,8 @@ import {
   verticalListSortingStrategy
 } from '@dnd-kit/sortable'
 
-import { SortableItem } from './components/SortableList/SortableList.jsx'
-import { DroppableArea } from './components/droppableArea/droppableArea.jsx'
+import { SortableItem } from './components/SortableList.jsx'
+import { DroppableArea } from './components/droppableArea.jsx'
 
 export default function App() {
   // Local player testing / datas
