@@ -22,7 +22,7 @@ import {
 import { SortableItem } from './components/SortableList.jsx'
 import { DroppableArea } from './components/DroppableArea.jsx'
 
-import { fetchPlayersQueues } from './actions.js'
+import { fetchPlayersQueues, savePlayersQueue } from './actions.js'
 
 export default function App() {
   // Local player testing / datas
@@ -159,24 +159,32 @@ export default function App() {
   }, [players])
 
   const handleSave = async () => {
-    const playerString = convertPlayersToString(players)
-    try {
-      const response = await fetch('http://localhost:3000/players', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ name_lists: playerString })
-      })
-      if (response.ok) {
-        setOriginalPlayers(players)
-        setHasChanges(false)
-        alert('Changes saved!')
-      } else {
-        console.error('Failed to save changes.')
-      }
-    } catch (error) {
-      console.error('Error saving changes:', error)
+    // GunnerCat
+    // const playerString = convertPlayersToString(players)
+    // try {
+    //   const response = await fetch('http://localhost:3000/players', {
+    //     method: 'POST',
+    //     headers: {
+    //       'Content-Type': 'application/json'
+    //     },
+    //     body: JSON.stringify({ name_lists: playerString })
+    //   })
+    //   if (response.ok) {
+    //     setOriginalPlayers(players)
+    //     setHasChanges(false)
+    //     alert('Changes saved!')
+    //   } else {
+    //     console.error('Failed to save changes.')
+    //   }
+    // } catch (error) {
+    //   console.error('Error saving changes:', error)
+    // }
+
+    // youyoumu
+    if (await savePlayersQueue(players)) {
+      setOriginalPlayers(players)
+      setHasChanges(false)
+      alert('Changes saved!')
     }
   }
 
