@@ -6,43 +6,6 @@ const Modal = ({ setUsername, showModal, setShowModal }) => {
   const [inputName, setInputName] = useState('')
 
   const handleUsernameSubmit = async () => {
-    // GunnerCat
-    // if (localStorage.getItem("username") === null) {
-    //   localStorage.setItem("username", inputName);
-    //   localStorage.setItem("id", Date.now());
-    //   setUsername(inputName);
-    //   const requestOptions = {
-    //     method: "POST",
-    //     headers: { "Content-Type": "application/json" },
-    //     body: JSON.stringify({ id: Date.now(), name: inputName }),
-    //   };
-
-    //   await fetch("http://localhost:3000/users", requestOptions).then(
-    //     (response) => {
-    //       response.json().then((data) => {
-    //         console.log("the data is", data);
-    //       });
-    //     }
-    //   );
-    //   setShowModal(false);
-    // } else {
-    //   const id = localStorage.getItem("id");
-    //   localStorage.setItem("username", inputName);
-    //   setUsername(inputName);
-
-    //   const requestOptions = {
-    //     method: "PUT",
-    //     headers: { "Content-Type": "application/json" },
-    //     body: JSON.stringify({ name: inputName }),
-    //   };
-    //   await fetch(
-    //     `http://localhost:3000/users/update/${id}`,
-    //     requestOptions
-    //   ).then((response) => response.json());
-    //   setShowModal(false);
-    // }
-
-    // youyoumu
     const userData = await signUp(inputName)
     if (userData) {
       localStorage.setItem('username', userData.name)

@@ -61,6 +61,7 @@ export async function signUp(name) {
         }
       })
     })
+    console.log(response)
     if (response.ok) {
       const data = await response.json()
       return data

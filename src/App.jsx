@@ -136,16 +136,6 @@ export default function App() {
   // Fetch data
   const fetchData = async () => {
     try {
-      // GunnarCat
-      // const response = await fetch('http://localhost:3000/players')
-      // const data = await response.json()
-      // const arrayData = data.name_lists.split(',')
-      // const players = arrayData.map((item, index) => ({
-      //   id: index + 1,
-      //   name: item
-      // }))
-
-      // youyoumu
       const playersQueues = await fetchPlayersQueues()
       const playersArray = playersQueues[0].players.split(',')
       const players = playersArray.map((item, index) => ({
@@ -164,36 +154,11 @@ export default function App() {
     fetchData()
   }, [])
 
-  const convertPlayersToString = (players) => {
-    return players.map((player) => player.name).join(',')
-  }
-
   useEffect(() => {
     setHasChanges(JSON.stringify(players) !== JSON.stringify(originalPlayers))
   }, [players])
 
   const handleSave = async () => {
-    // GunnerCat
-    // const playerString = convertPlayersToString(players)
-    // try {
-    //   const response = await fetch('http://localhost:3000/players', {
-    //     method: 'POST',
-    //     headers: {
-    //       'Content-Type': 'application/json'
-    //     },
-    //     body: JSON.stringify({ name_lists: playerString })
-    //   })
-    //   if (response.ok) {
-    //     setOriginalPlayers(players)
-    //     setHasChanges(false)
-    //     alert('Changes saved!')
-    //   } else {
-    //     console.error('Failed to save changes.')
-    //   }
-    // } catch (error) {
-    //   console.error('Error saving changes:', error)
-    // }
-
     // youyoumu
     if (await savePlayersQueue(players)) {
       setOriginalPlayers(players)
