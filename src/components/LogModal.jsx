@@ -40,7 +40,7 @@ const Modal = ({ showModal, setShowModal, restorePlayer }) => {
               {user.players ? user.players : 'No Data'}
             </div>
             <div className="truncate min-w-20 max-w-28">{user.userName}</div>
-            <button type="submit" className="btn btn-sm hover:bg-blue-500">
+            <button type="submit" className="btn btn-sm hover:btn-primary">
               Restore
             </button>
           </form>
