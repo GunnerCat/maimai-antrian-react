@@ -231,14 +231,13 @@ export default function App() {
                     items={players.map((player) => player.id)}
                     strategy={verticalListSortingStrategy}
                   >
-
                     {players.length >= 1 ? (
                       players.map((player) => (
                         <SortableItem
                           key={player.id}
                           id={player.id}
                           name={player.name}
-                          drag={activeItem?.id !== player.id}
+                          drag={activeItem?.id === player.id}
                         />
                       ))
                     ) : (
@@ -262,7 +261,7 @@ export default function App() {
                         key={activeItem.id}
                         id={activeItem.id}
                         name={activeItem.name}
-                        drag={true}
+                        drag={false}
                       />
                     ) : null}
                   </DragOverlay>
