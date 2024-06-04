@@ -147,6 +147,16 @@ export default function App() {
       console.error('Error fetching player data:', error)
     }
   }
+  const restorePlayer = (players) => {
+    console.log(players)
+    const playerArrays = players.split(', ')
+    const playersList = playerArrays.map((item, index) => ({
+      id: index + 1,
+      name: item
+    }))
+    setPlayers(playersList)
+    setShowLogModal(false)
+  }
 
   useEffect(() => {
     fetchData()
@@ -187,7 +197,11 @@ export default function App() {
           showModal={showModal}
           setShowModal={setShowModal}
         />
-        <LogModal showModal={showLogModal} setShowModal={setShowLogModal} />
+        <LogModal
+          showModal={showLogModal}
+          setShowModal={setShowLogModal}
+          restorePlayer={restorePlayer}
+        />
         <header className="flex flex-col item-center mb-5 justify-center">
           <div className="flex justify-center">
             <img

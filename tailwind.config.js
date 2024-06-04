@@ -1,33 +1,40 @@
 /** @type {import('tailwindcss').Config} */
-import daisyui from "daisyui"
+import daisyui from 'daisyui'
 export default {
   daisyui: {
-    themes: ["light"]
+    themes: ['light']
   },
-  content: [
-    "./index.html",
-    "./src/**/*.{js,ts,jsx,tsx}",
-  ],
+  content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
   plugins: [
-    daisyui,
+    function ({ addUtilities }) {
+      const utilities = {
+        '.no-scrollbar::webkit-scrollbar': {
+          display: 'none'
+        },
+        '.no-scrollbar': {
+          '-ms-overflow-style': 'none',
+          'scrollbar-width': 'none'
+        }
+      }
+      addUtilities(utilities)
+    },
+    daisyui
   ],
   theme: {
     extend: {
       backgroundImage: {
-        'maimai-background': "url('/src/assets/home.png')",
+        'maimai-background': "url('/src/assets/home.png')"
       },
       colors: {
-        'creamy': '#fffaeb',
+        creamy: '#fffaeb'
       },
       width: {
-        '480': '30rem',
+        480: '30rem'
       },
-      minHeight:{
+      minHeight: {
         '50vh': '50vh'
       },
-      height:{
-        
-      }
-    },
-  },
+      height: {}
+    }
+  }
 }
