@@ -7,7 +7,9 @@ export function DroppableArea({ id, children }) {
 
   return (
     <div
-      className={`p-5 rounded-md ${isOver ? 'bg-red-500' : 'bg-gray-100'}`}
+      className={`p-5 transition rounded-md ${
+        isOver ? 'bg-red-500' : 'bg-gray-100'
+      }`}
       ref={setNodeRef}
     >
       {children}

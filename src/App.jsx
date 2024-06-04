@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react'
 import Modal from './components/Modal.jsx'
 import BemacoLogo from './assets/BemacoLogo.png'
+import NoPlayer from './assets/NoPlayer.png'
 import LogModal from './components/LogModal.jsx'
 
 import {
@@ -135,6 +136,7 @@ export default function App() {
   const fetchData = async () => {
     try {
       const playersQueues = await fetchPlayersQueues()
+      if (playersQueues[0].players === '') return
       const playersArray = playersQueues[0].players.split(', ')
       const players = playersArray.map((item, index) => ({
         id: index + 1,
@@ -230,17 +232,26 @@ export default function App() {
                     items={players.map((player) => player.id)}
                     strategy={verticalListSortingStrategy}
                   >
-                    {players
-                      ? players.map((player, index) => (
-                          <SortableItem
-                            key={player.id}
-                            id={player.id}
-                            name={player.name}
-                            idx={index}
-                            itemSize={players.length}
-                          />
-                        ))
-                      : 'nothing'}
+                    {console.log(players)}
+                    {players.length >= 1 ? (
+                      players.map((player, index) => (
+                        <SortableItem
+                          key={player.id}
+                          id={player.id}
+                          name={player.name}
+                          idx={index}
+                          itemSize={players.length}
+                        />
+                      ))
+                    ) : (
+                      <div className="bg-amber-100 p-2">
+                        <img
+                          src={NoPlayer}
+                          className="object-cover justify-bottom"
+                          alt="NoPlayer"
+                        ></img>
+                      </div>
+                    )}
                   </SortableContext>
                   <DragOverlay
                     dropAnimation={{
