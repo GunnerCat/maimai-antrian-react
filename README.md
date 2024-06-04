@@ -6,12 +6,13 @@
 - [x] Connect Backend to Modal
 - [x] Create player system with backend
 - [x] On Change, add new name_lists in player_queue BE
-- [x] Remove a player 
-- [ ] Create Log for user interaction
+- [x] Remove a player
+- [x] Create Log for user interaction
 - [ ] Release (????)
 
 # UI shenanigans / Code Improvement
+
 - [x] validation to add players (user have entered username, string length validation)
 - [x] make it responsive
 - [ ] Beautify UI
-- [ ] Optimize code
+- [x] Optimize code
