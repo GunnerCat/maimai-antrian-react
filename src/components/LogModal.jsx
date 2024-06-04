@@ -1,35 +1,47 @@
-import { fetchPlayersQueues } from '../actions'
+import { fetchPlayersQueues, fetchUser } from '../actions'
 import { useEffect, useState } from 'react'
 
 const Modal = ({ showModal, setShowModal }) => {
-  const [playersQueues, setPlayersQueues] = useState([])
+  const [users, setUsers] = useState([])
 
   useEffect(() => {
-    const playersQueues = async () => {
-      const playersQueues = await fetchPlayersQueues()
-      setPlayersQueues(playersQueues)
+    const fetchData = async () => {
+      const fetchedPlayersQueues = await fetchPlayersQueues()
+      const queueUsers = await Promise.all(
+        fetchedPlayersQueues.map(async (queue) => {
+          const user = await fetchUser(queue.user_id)
+          return { ...queue, userName: user.name }
+        })
+      )
+      setUsers(queueUsers)
     }
-    playersQueues()
+
+    if (showModal) {
+      fetchData()
+    }
   }, [showModal])
 
   if (!showModal) return null
 
-  function Log() {
-    return playersQueues.map((queue) => {
-      return (
-        <div key={queue.id} className="flex gap-4">
-          <div>{queue.players}</div>
-          <div>{queue.user_id}</div>
-        </div>
-      )
-    })
-  }
-
   return (
-    <dialog id="my_modal_2" className="modal modal-open">
+    <dialog id="my_modal_2" className="modal modal-open mb">
       <div className="modal-box w-auto">
         <h3 className="font-bold text-lg">Log</h3>
-        <Log />
+        {users.map((user) => (
+          <div
+            key={user.id}
+            className="flex gap-4 justify-between items-center mb-5"
+          >
+            {user.players ? (
+              <div className="break-words max-w-44 sm:max-w-none  ">
+                {user.players}
+              </div>
+            ) : (
+              <div> No Data </div>
+            )}
+            <div>{user.userName}</div>
+          </div>
+        ))}
       </div>
       <div className="modal-backdrop">
         <button onClick={() => setShowModal(false)}>close</button>
