@@ -1,5 +1,20 @@
 const BE_URL = import.meta.env.VITE_BE_URL
 
+export async function fetchUser(id) {
+  try {
+    const response = await fetch(`${BE_URL}/users/${id}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    const data = await response.json()
+    return data
+  } catch (error) {
+    console.error('Error fetching users:', error)
+  }
+}
+
 export async function fetchPlayersQueues() {
   try {
     const response = await fetch(`${BE_URL}/players_queues`, {
@@ -9,7 +24,6 @@ export async function fetchPlayersQueues() {
       }
     })
     const data = await response.json()
-    console.log(data)
     return data
   } catch (error) {
     console.error('Error fetching players_queues:', error)
@@ -19,7 +33,7 @@ export async function fetchPlayersQueues() {
 export async function savePlayersQueue(playersArray) {
   const userId = localStorage.getItem('id')
   const roomId = '0000'
-  const playerString = playersArray.map((player) => player.name).join(',')
+  const playerString = playersArray.map((player) => player.name).join(', ')
 
   try {
     const response = await fetch(`${BE_URL}/players_queues`, {
@@ -61,7 +75,6 @@ export async function signUp(name) {
         }
       })
     })
-    console.log(response)
     if (response.ok) {
       const data = await response.json()
       return data

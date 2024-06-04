@@ -50,8 +50,6 @@ export default function App() {
 
   const [activeItem, setActiveItem] = useState(null)
   const handleDragStart = (event) => {
-    console.log(event.active.id)
-    console.log(players.find((player) => player.id === event.active.id))
     setActiveItem(players.find((player) => player.id === event.active.id))
   }
 
@@ -137,7 +135,7 @@ export default function App() {
   const fetchData = async () => {
     try {
       const playersQueues = await fetchPlayersQueues()
-      const playersArray = playersQueues[0].players.split(',')
+      const playersArray = playersQueues[0].players.split(', ')
       const players = playersArray.map((item, index) => ({
         id: index + 1,
         name: item
