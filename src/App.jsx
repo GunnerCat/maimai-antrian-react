@@ -150,7 +150,6 @@ export default function App() {
     }
   }
   const restorePlayer = (players) => {
-    console.log(players)
     const playerArrays = players.split(', ')
     const playersList = playerArrays.map((item, index) => ({
       id: index + 1,
@@ -232,15 +231,14 @@ export default function App() {
                     items={players.map((player) => player.id)}
                     strategy={verticalListSortingStrategy}
                   >
-                    {console.log(players)}
+
                     {players.length >= 1 ? (
-                      players.map((player, index) => (
+                      players.map((player) => (
                         <SortableItem
                           key={player.id}
                           id={player.id}
                           name={player.name}
-                          idx={index}
-                          itemSize={players.length}
+                          drag={activeItem?.id !== player.id}
                         />
                       ))
                     ) : (
@@ -264,10 +262,7 @@ export default function App() {
                         key={activeItem.id}
                         id={activeItem.id}
                         name={activeItem.name}
-                        idx={players.findIndex(
-                          (player) => player.id === activeItem.id
-                        )}
-                        itemSize={players.length}
+                        drag={true}
                       />
                     ) : null}
                   </DragOverlay>
