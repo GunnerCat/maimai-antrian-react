@@ -22,9 +22,6 @@ export default {
   ],
   theme: {
     extend: {
-      backgroundImage: {
-        'maimai-background': "url('/src/assets/home.png')"
-      },
       colors: {
         creamy: '#fffaeb'
       },
