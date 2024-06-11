@@ -172,10 +172,11 @@ export default function App() {
       alert('Please input username')
       return
     }
-
-    setOriginalPlayers(players)
-    setHasChanges(false)
-    alert('Changes saved!')
+    if (await savePlayersQueue(players)) {
+      setOriginalPlayers(players)
+      setHasChanges(false)
+      alert('Changes saved!')
+    }
   }
 
   const handleCancel = () => {
@@ -319,7 +320,10 @@ export default function App() {
             </button>
           </div>
         </div>
-        <footer className="bg-maimai-background bg-center bg-cover bg-no-repeat bottom-0 w-full h-[31.25rem]"></footer>
+        <footer
+          style={{ backgroundImage: "url('/src/assets/home.png')" }}
+          className="bg-maimai-background bg-center bg-cover bg-no-repeat bottom-0 w-full h-[31.25rem]"
+        ></footer>
       </div>
     </div>
   )
