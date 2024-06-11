@@ -1,4 +1,3 @@
-// App.jsx
 import { useState, useEffect } from 'react'
 import Modal from './components/Modal.jsx'
 import BemacoLogo from './assets/BemacoLogo.png'
@@ -169,11 +168,14 @@ export default function App() {
 
   const handleSave = async () => {
     // youyoumu
-    if (await savePlayersQueue(players)) {
-      setOriginalPlayers(players)
-      setHasChanges(false)
-      alert('Changes saved!')
+    if (!username) {
+      alert('Please input username')
+      return
     }
+
+    setOriginalPlayers(players)
+    setHasChanges(false)
+    alert('Changes saved!')
   }
 
   const handleCancel = () => {
@@ -212,7 +214,7 @@ export default function App() {
               onClick={handleLogoClick}
             ></img>
           </div>
-          <div>{'Hi, ' + username}</div>
+          <div>{'Hi, ' + (username ? username : 'New Player!')}</div>
           <div className="flex">Antrian Maimai Hari ini</div>
           <div className="flex">{timeNow()}</div>
         </header>
