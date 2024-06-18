@@ -10,7 +10,7 @@ import {
   PointerSensor,
   useSensor,
   useSensors,
-  rectIntersection,
+  closestCenter,
   DragOverlay
 } from '@dnd-kit/core'
 import {
@@ -22,6 +22,7 @@ import {
 
 import { SortableItem } from './components/SortableList.jsx'
 import { DroppableArea } from './components/DroppableArea.jsx'
+import { motion } from 'framer-motion'
 
 import { fetchPlayersQueues, savePlayersQueue } from './actions.js'
 
@@ -65,6 +66,7 @@ export default function App() {
   const handleDragEnd = (event) => {
     const { active, over } = event
     setActiveItem(null)
+
     if (!over) return
 
     if (over.id === 'droppable') {
@@ -219,101 +221,116 @@ export default function App() {
           <div className="flex">Antrian Maimai Hari ini</div>
           <div className="flex">{timeNow()}</div>
         </header>
-        <div className="min-h-50vh mb-5 flex flex-col justify-center">
-          <div className="mb-5 flex flex-col items-center">
-            {/* Table */}
-            <DndContext
-              sensors={sensors}
-              collisionDetection={rectIntersection}
-              onDragStart={handleDragStart}
-              onDragEnd={handleDragEnd}
+        <div className="flex flex-col items-center">
+          {/* Table */}
+          <DndContext
+            sensors={sensors}
+            collisionDetection={closestCenter}
+            onDragStart={handleDragStart}
+            onDragEnd={handleDragEnd}
+          >
+            <motion.div
+              transition={{ duration: 0.5 }}
+              className="mb-5 p-5 bg-rose-500 rounded-lg"
+              style={{ transition: 'all 0.5s' }}
             >
-              <div className="mb-5 p-5 bg-rose-500 rounded-lg">
-                <div className="rounded-lg overflow-hidden gap-0.5 flex flex-col ">
-                  <SortableContext
-                    items={players.map((player) => player.id)}
-                    strategy={verticalListSortingStrategy}
-                  >
-                    {players.length >= 1 ? (
-                      players.map((player) => (
-                        <SortableItem
-                          key={player.id}
-                          id={player.id}
-                          name={player.name}
-                          drag={activeItem?.id === player.id}
-                        />
-                      ))
-                    ) : (
-                      <div className="bg-amber-100 p-2">
-                        <img
-                          src={NoPlayer}
-                          className="object-cover justify-bottom"
-                          alt="NoPlayer"
-                        ></img>
-                      </div>
-                    )}
-                  </SortableContext>
-                  <DragOverlay
-                    dropAnimation={{
-                      duration: 250,
-                      easing: 'cubic-bezier(0.18, 0.67, 0.6, 1.22)'
-                    }}
-                  >
-                    {activeItem ? (
+              <div className="rounded-lg overflow-hidden gap-0.5 flex flex-col ">
+                <SortableContext
+                  items={players.map((player) => player.id)}
+                  strategy={verticalListSortingStrategy}
+                >
+                  {players.length >= 1 ? (
+                    players.map((player) => (
                       <SortableItem
-                        key={activeItem.id}
-                        id={activeItem.id}
-                        name={activeItem.name}
-                        drag={false}
+                        key={player.id}
+                        id={player.id}
+                        name={player.name}
+                        drag={activeItem?.id === player.id}
                       />
-                    ) : null}
-                  </DragOverlay>
-                </div>
+                    ))
+                  ) : (
+                    <div className="bg-amber-100  p-2">
+                      <img
+                        src={NoPlayer}
+                        className="object-cover justify-bottom"
+                        alt="NoPlayer"
+                      ></img>
+                      <span className="flex justify-center">
+                        Currently There is no Player!
+                      </span>
+                    </div>
+                  )}
+                </SortableContext>
+                <DragOverlay
+                  dropAnimation={{
+                    duration: 250,
+                    easing: 'cubic-bezier(0.18, 0.67, 0.6, 1.22)'
+                  }}
+                >
+                  {activeItem ? (
+                    <SortableItem
+                      key={activeItem.id}
+                      id={activeItem.id}
+                      name={activeItem.name}
+                      drag={false}
+                    />
+                  ) : null}
+                </DragOverlay>
               </div>
-
-              <form onSubmit={(e) => playerSubmit(e)}>
-                <div className="join flex justify-center">
-                  <input
-                    className="input input-bordered join-item"
-                    value={fields['name']}
-                    onChange={(e) => handleChange('name', e.target.value)}
-                  ></input>
-                  <button
-                    type="submit"
-                    id="submit"
-                    value="submit"
-                    className="btn btn-secondary join-item"
-                  >
-                    Queue
-                  </button>
-                </div>
-                <div className="flex justify-center mb-5">
-                  <span className="text-error">{errors['name']}</span>
-                </div>
-              </form>
-
-              {/* Droppable Area */}
+            </motion.div>
+            <form onSubmit={(e) => playerSubmit(e)}>
+              <div className="join flex justify-center mb-5">
+                <input
+                  className="input input-bordered join-item"
+                  value={fields['name']}
+                  onChange={(e) => handleChange('name', e.target.value)}
+                ></input>
+                <button
+                  type="submit"
+                  id="submit"
+                  value="submit"
+                  className="btn btn-secondary join-item"
+                >
+                  Queue
+                </button>
+              </div>
               <div className="flex justify-center">
+                <span className="text-error">{errors['name']}</span>
+              </div>
+            </form>
+
+            {/* Droppable Area */}
+            {activeItem && (
+              <motion.div
+                initial={{ opacity: 0, y: -5 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.1 }}
+                className="flex justify-center mb-5"
+              >
                 <DroppableArea id="droppable">
                   <h3>Remove Player here</h3>
                 </DroppableArea>
-              </div>
-            </DndContext>
-          </div>
+              </motion.div>
+            )}
+          </DndContext>
+        </div>
+        <div className="mb-5 flex flex-col justify-center">
           {/* Form */}
+          {hasChanges && (
+            <div className="flex justify-center mb-5">
+              <button
+                className="btn bg-teal-200 mr-2"
+                disabled={!hasChanges}
+                onClick={handleSave}
+              >
+                Save
+              </button>
+              <button className="btn btn-secondary" onClick={handleCancel}>
+                Cancel
+              </button>
+            </div>
+          )}
 
-          <div className="flex justify-center mb-5">
-            <button
-              className="btn bg-teal-200 mr-2"
-              disabled={!hasChanges}
-              onClick={handleSave}
-            >
-              Save
-            </button>
-            <button className="btn btn-secondary" onClick={handleCancel}>
-              Cancel
-            </button>
-          </div>
           <div className="flex justify-center">
             <button className="btn w-52" onClick={() => setShowModal(true)}>
               {text}

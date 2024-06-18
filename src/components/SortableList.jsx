@@ -1,5 +1,6 @@
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
+import { motion } from 'framer-motion'
 
 export function SortableItem({ id, name, drag }) {
   const { attributes, listeners, setNodeRef, transform, transition } =
@@ -12,14 +13,16 @@ export function SortableItem({ id, name, drag }) {
   return (
     <div ref={setNodeRef} style={style} {...attributes} {...listeners}>
       {drag ? (
-        <div key={id} className="h-14"></div>
+        <div key={id} className="h-14 w-80"></div>
       ) : (
-        <div
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
           key={id}
           className="touch-none p-4 bg-amber-100 border-solid  min-w-80  w-1/2"
         >
           <span className="flex justify-center">{name}</span>
-        </div>
+        </motion.div>
       )}
     </div>
   )
