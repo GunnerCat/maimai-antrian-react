@@ -4,6 +4,7 @@ import BemacoLogo from './assets/BemacoLogo.png'
 import NoPlayer from './assets/NoPlayer.png'
 import Home from './assets/Home.png'
 import LogModal from './components/LogModal.jsx'
+import './index.css'
 
 import {
   DndContext,
