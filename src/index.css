@@ -1,3 +1,15 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@font-face {
+  font-family: 'Tiny5';
+  src: url('/public/font/Tiny5-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+header {
+  font-family: 'Tiny5', sans-serif;
+}
+

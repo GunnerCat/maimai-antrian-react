@@ -19,7 +19,7 @@ export function SortableItem({ id, name, drag }) {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           key={id}
-          className="touch-none p-4 bg-amber-100 border-solid  min-w-80  w-1/2"
+          className="touch-none p-4 bg-amber-100 border-solid  min-w-80"
         >
           <span className="flex justify-center">{name}</span>
         </motion.div>

@@ -208,7 +208,7 @@ export default function App() {
           setShowModal={setShowLogModal}
           restorePlayer={restorePlayer}
         />
-        <header className="flex flex-col item-center mb-5 justify-center">
+        <header className="flex flex-col item-center mb-5 justify-center items-center">
           <div className="flex justify-center">
             <img
               src={BemacoLogo}
@@ -217,11 +217,13 @@ export default function App() {
               onClick={handleLogoClick}
             ></img>
           </div>
-          <div>{'Hi, ' + (username ? username : 'New Player!')}</div>
-          <div className="flex">Antrian Maimai Hari ini</div>
-          <div className="flex">{timeNow()}</div>
+          <div className="text-3xl text-cyan-800">Antrian Maimai Hari ini</div>
+          <div className="text-2xl">
+            {'Hi, ' + (username ? username : 'New Player')}!
+          </div>
+          <div className="text-2xl">{timeNow()}</div>
         </header>
-        <div className="flex flex-col items-center">
+        <div>
           {/* Table */}
           <DndContext
             sensors={sensors}
