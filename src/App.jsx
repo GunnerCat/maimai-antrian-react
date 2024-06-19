@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import Modal from './components/Modal.jsx'
 import BemacoLogo from './assets/BemacoLogo.png'
 import NoPlayer from './assets/NoPlayer.png'
+import Home from './assets/Home.png'
 import LogModal from './components/LogModal.jsx'
 
 import {
@@ -340,7 +341,7 @@ export default function App() {
           </div>
         </div>
         <footer
-          style={{ backgroundImage: "url('../src/assets/home.png')" }}
+          style={{ backgroundImage: `url(${Home})` }}
           className="bg-maimai-background bg-center bg-cover bg-no-repeat bottom-0 w-full h-[31.25rem]"
         ></footer>
       </div>
