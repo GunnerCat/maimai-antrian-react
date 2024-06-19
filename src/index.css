@@ -4,7 +4,7 @@
 
 @font-face {
   font-family: 'Tiny5';
-  src: url('/public/font/Tiny5-Regular.ttf') format('truetype');
+  src: url('../public/font/Tiny5-Regular.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
 }

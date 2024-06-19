@@ -340,7 +340,7 @@ export default function App() {
           </div>
         </div>
         <footer
-          style={{ backgroundImage: "url('/src/assets/home.png')" }}
+          style={{ backgroundImage: "url('../src/assets/home.png')" }}
           className="bg-maimai-background bg-center bg-cover bg-no-repeat bottom-0 w-full h-[31.25rem]"
         ></footer>
       </div>
